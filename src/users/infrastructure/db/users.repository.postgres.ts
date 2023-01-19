@@ -9,7 +9,7 @@ import { compare, hash } from "../../../context/security/encrypter";
 export default class UsersRepositoryPostgres implements UsersRepository{
     async register(user: User): Promise<Message> {
         if(user.name && user.password){
-            await executeQuery(``)
+            await executeQuery(`insert into users values ('${user.name}','${hash(user.password)}')`)
 
             const message: Message ={
                 text: 'Usuario creado'
@@ -23,7 +23,7 @@ export default class UsersRepositoryPostgres implements UsersRepository{
     }
     async login(user: User): Promise<Boolean> {
         if (user.name && user.password){
-            const result: any[] = await executeQuery(``)
+            const result: any[] = await executeQuery(`select * from users where name = '${user.name}'`)
             const userDB = result[0]
             if (userDB && compare(user.password, userDB.password)){
                 return true;
