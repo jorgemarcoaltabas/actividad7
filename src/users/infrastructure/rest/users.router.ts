@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
 
-import UsersUseCases from "../../application/users.usercases";
+import UsersUseCases from "../../application/users.usecases";
 import UsersRepository from "../../domain/Users.repository";
 import UsersRepositoryPostgres from "../db/users.repository.postgres";
 
