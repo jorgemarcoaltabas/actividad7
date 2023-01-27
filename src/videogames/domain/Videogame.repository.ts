@@ -2,7 +2,9 @@ import Message from "../../context/responses/Message";
 import Videogame from "./Videogame";
 
 export default interface VideogamesRepository{
-    gameList(): Promise<Videogame[]>
-    oneGame(videogame: Videogame): Promise<Videogame>
-    putGame(videogame: Videogame): Promise<Message>
+    getAllGames(): Promise<Videogame[]>
+    getOneGame(id : Number): Promise<Videogame>
+    addGame(videogame: Videogame): Promise<Videogame>
+    modifyGame(videogame : Videogame , id : Number) : Promise<Videogame> 
+    deleteGame(id: Number) : Promise<Videogame[]>
 }
