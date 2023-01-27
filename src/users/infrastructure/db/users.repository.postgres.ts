@@ -6,26 +6,26 @@ import executeQuery from "../../../context/db/postgres.connector";
 import { compare, hash } from "../../../context/security/encrypter";
 
 
-export default class UsersRepositoryPostgres implements UsersRepository{
+export default class UsersRepositoryPostgres implements UsersRepository {
     async register(user: User): Promise<Message> {
-        if(user.name && user.password){
-            await executeQuery(`insert into users values ('${user.name}','${hash(user.password)}')`)
+        if (user.name && user.password) {
+            await executeQuery(`insert into users (name, password) values ('${user.name}','${hash(user.password)}')`)
 
-            const message: Message ={
+            const message: Message = {
                 text: 'Usuario creado'
             }
             return message;
         }
-        const message: Message ={
+        const message: Message = {
             text: 'Ha ocurrido un error'
         }
         return message;
     }
     async login(user: User): Promise<Boolean> {
-        if (user.name && user.password){
+        if (user.name && user.password) {
             const result: any[] = await executeQuery(`select * from users where name = '${user.name}'`)
             const userDB = result[0]
-            if (userDB && compare(user.password, userDB.password)){
+            if (userDB && compare(user.password, userDB.password)) {
                 return true;
             }
         }

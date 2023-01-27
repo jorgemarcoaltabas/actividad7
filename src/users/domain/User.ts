@@ -1,5 +1,6 @@
-export default interface User{
+export default interface User {
     id?: number,
     name: string,
-    password?: string
+    password?: string,
+    role?: "admin" | "user"
 }
