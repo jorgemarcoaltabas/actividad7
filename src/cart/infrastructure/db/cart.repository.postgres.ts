@@ -2,48 +2,58 @@
 import CartRepository from './../../domain/Cart.repository';
 import executeQuery from './../../../context/db/postgres.connector';
 import Videogame from './../../../videogames/domain/Videogame';
+import Item from '../../domain/Item';
 export default class CartRepositoryPostgres implements CartRepository {
-    async getCart(idUser: Number): Promise<Map<Number, Number>> {
-        const cart: Map<Number, Number> = new Map<Number, Number>();
+
+    async getCart(idUser: Number): Promise<Item[]> {
+        const items: Item[] = [];
         try {
-            const cartDB: any[] = await executeQuery("SELECT videogame , quantity FROM carts where user =" + idUser);
+            const cartDB: any[] = await executeQuery("SELECT videogames , quantity FROM carts where users =" + idUser);
 
             for (let item of cartDB) {
-                cart.set(item.videogame, item.quantity)
+                items.push(
+                    {
+                        videogame: item.videogames,
+                        quantity: item.quantity,
+                    }
+                )
             }
+            return items;
 
         } catch (err) {
             console.error(err);
         }
-        return cart;
+        console.log("GET CART:")
+        console.log(items);
+        return items;
 
     }
-    async addToCart(idUser: Number, idGame: Number, quantity: Number): Promise<Map<Number, Number>> {
-        let cart: Map<Number, Number> = new Map<Number, Number>();
+    async addToCart(idUser: Number, idGame: Number, quantity: Number): Promise<Item[]> {
+        let items: Item[] = [];
         try {
             await executeQuery(`INSERT INTO carts VALUES (${idUser}, ${idGame}, ${quantity})`)
 
-            cart = await this.getCart(idUser);
+            items = await this.getCart(idUser);
         } catch (err) {
             console.error(err);
         }
-        return cart;
+        return items;
 
     }
-    async deleteFromCart(idUser: Number, idGame: Number): Promise<Map<Number, Number>> {
-        let cart: Map<Number, Number> = new Map<Number, Number>();
+    async deleteFromCart(idUser: Number, idGame: Number): Promise<Item[]> {
+        let items: Item[] = [];
         try {
-            await executeQuery(`DELETE FROM carts WHERE user=${idUser} AND videogame=${idGame} `);
-            cart = await this.getCart(idUser);
+            await executeQuery(`DELETE FROM carts WHERE users = ${idUser} AND videogames = ${idGame} `);
+            items = await this.getCart(idUser);
         } catch (err) {
             console.error(err)
         }
-        return cart;
+        return items;
 
     }
     async deleteCart(idUser: Number): Promise<Boolean> {
         try {
-            await executeQuery(`DELETE FROM carts WHERE user = ${idUser} `)
+            await executeQuery(`DELETE FROM carts WHERE users = ${idUser} `)
         } catch (err) {
             console.error(err)
             return false;

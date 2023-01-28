@@ -3,6 +3,8 @@ import Videogame from '../../videogames/domain/Videogame';
 import CartRepository from './../domain/Cart.repository';
 import VideogamesRepository from './../../videogames/domain/Videogame.repository';
 import Cart from '../domain/Cart';
+import Item from '../domain/Item'
+import ItemData from './../domain/ItemData';
 
 export default class Cartusecases {
     cartRepository: CartRepository
@@ -14,18 +16,23 @@ export default class Cartusecases {
     }
 
     async getCart(id: Number): Promise<Cart> {
-        const items: Map<Videogame, Number> = new Map<Videogame, Number>();
+        const items: ItemData[] = [];
         try {
-            const cartDB: Map<Number, Number> = await this.cartRepository.getCart(id);
-            for (let [videogame, quantity] of cartDB) {
-                const videogameData: Videogame = await this.videogameRepository.getOneGame(videogame);
-                items.set(videogameData, quantity);
+            const cartDB: Item[] = await this.cartRepository.getCart(id);
+
+            for (let item of cartDB) {
+                const videogameData: Videogame = await this.videogameRepository.getOneGame(item.videogame);
+                items.push({
+                    videogame: videogameData,
+                    quantity: item.quantity
+                })
             }
         } catch (err) {
             console.error(err)
         }
         const cart: Cart = {
             items: items,
+            user: id
         }
         return cart;
     }

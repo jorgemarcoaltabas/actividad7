@@ -11,11 +11,24 @@ export default class UsersUseCases {
     this.usersRepository = usersRepository;
   }
 
+  async getUser(user: User): Promise<User | null> {
+    if (user.id) {
+      const userReturned: User = await this.usersRepository.getUser(user.id)
+      return userReturned;
+    }
+    return null;
+
+  }
+
+  getAllUsers(): Promise<User[]> {
+    return this.usersRepository.getAllUsers();
+  }
+
   register(user: User): Promise<Message> {
     return this.usersRepository.register(user);
   }
 
-  login(user: User): Promise<Boolean> {
+  login(user: User): Promise<User> {
     return this.usersRepository.login(user);
   }
 

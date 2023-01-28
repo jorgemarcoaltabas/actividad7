@@ -7,13 +7,16 @@ import Videogame from '../../videogames/domain/Videogame';
 import User from './../../users/domain/User';
 import Orders from '../domain/Orders';
 import e from 'express';
-export default class ordersUsecases {
+import CartRepository from './../../cart/domain/Cart.repository';
+export default class OrdersUsecases {
 
     orderRepository: OrderRepository
     videogamesRepository: VideogamesRepository
-    constructor(orderRepository: OrderRepository, videogamesRepository: VideogamesRepository) {
+    cartRepository: CartRepository;
+    constructor(orderRepository: OrderRepository, videogamesRepository: VideogamesRepository, cartRepository: CartRepository) {
         this.orderRepository = orderRepository;
         this.videogamesRepository = videogamesRepository;
+        this.cartRepository = cartRepository;
     }
 
     async getOrders(idUser: Number): Promise<Orders | null> {
@@ -22,6 +25,7 @@ export default class ordersUsecases {
             const orders: Orders = {
                 user: idUser
             }
+            const ordersData: OrderData[] = [];
 
             for (let orderDB of ordersDB) {
                 const itemsExtraData: ItemData[] = [];
@@ -33,13 +37,16 @@ export default class ordersUsecases {
                     })
 
                 }
-                const order: OrderData = {
-                    id: orderDB.id,
-                    items: itemsExtraData
+                if (orderDB.id) {
+                    const order: OrderData = {
+                        id: orderDB.id,
+                        items: itemsExtraData
+                    }
+                    ordersData.push(order);
                 }
-                orders.orders?.push(order);
 
             }
+            orders.orders = ordersData;
             return orders;
         } catch (err) {
             console.error(err)
@@ -61,11 +68,14 @@ export default class ordersUsecases {
                         quantity: item.quantity,
                     })
                 }
-                const orderData: OrderData = {
-                    id: order.id,
-                    items: itemsExtraData
+                if (order.id) {
+                    const orderData: OrderData = {
+                        id: order.id,
+                        items: itemsExtraData
+                    }
+                    return orderData;
                 }
-                return orderData;
+
             }
 
         } catch (err) {
@@ -77,12 +87,22 @@ export default class ordersUsecases {
     async addOneOrder(order: Order, idUser: Number): Promise<Orders | null> {
         try {
             await this.orderRepository.addOneOrder(order, idUser);
-            this.getOrders(idUser).then(data => { if (data) { const orders: Orders = data; return orders } });
+            const orders: Orders = {
+                orders: await
+                    this.getOrders(idUser).then(orders => {
+                        return orders?.orders
+                    }),
+                user: idUser
+            }
+            this.cartRepository.deleteCart(idUser);
 
+            return orders;
 
         } catch (err) {
             console.error(err);
         }
         return null;
     }
+
+
 }

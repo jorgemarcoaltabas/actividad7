@@ -8,7 +8,10 @@ const SECRET_KEY: Secret = "mySecretKey";
 const createToken = (user: User): string => {
   const payload = {
     user: {
+      id: user.id,
       name: user.name,
+      role: user.role
+
     },
   };
   return jwt.sign(payload, SECRET_KEY, { expiresIn: "1 days" });

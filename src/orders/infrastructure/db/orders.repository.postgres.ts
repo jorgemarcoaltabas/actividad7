@@ -8,7 +8,7 @@ export default class OrderRepositoryPostgres implements OrderRepository {
     async getOrders(idUser: Number): Promise<Order[]> {
         const orders: Order[] = [];
         try {
-            const ordersDB: any[] = await executeQuery(`SELECT * FROM orders WHERE  user = ${idUser}`)
+            const ordersDB: any[] = await executeQuery(`SELECT * FROM orders WHERE  users = ${idUser}`)
 
             for (let item of ordersDB) {
 
@@ -60,10 +60,10 @@ export default class OrderRepositoryPostgres implements OrderRepository {
     async addOneOrder(order: Order, idUser: Number): Promise<Order[] | null> {
 
         try {
-            const idOrder = await executeQuery(`INSERT INTO orders  (users) VALUES (${idUser}) RETURNING id`)[0].id
-            order.id = idOrder;
-            await
-                order.items.forEach(async item => await executeQuery(`INSERT INTO order_videogames VALUES (${order.id}, ${item.videogame}, ${item.price}, ${item.quantity})`))
+            const idOrder: any[] = await executeQuery(`INSERT INTO orders  (users) VALUES (${idUser}) RETURNING id`)
+            console.log("antes de asignar id" + idOrder[0].id);
+            const id = Number(idOrder[0].id)
+            order.items.forEach(async item => await executeQuery(`INSERT INTO order_videogames VALUES (${id}, ${item.videogame}, ${item.price}, ${item.quantity})`))
 
             return this.getOrders(idUser);
 

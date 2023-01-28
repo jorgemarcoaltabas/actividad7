@@ -39,6 +39,8 @@ router.post("/:idGame", isAuth, async (req: Request, res: Response) => {
         const idGame: Number = Number(req.params.idGame);
         const quantity: Number = Number(req.query.quantity);
 
+        console.log(`idUser:${idUser}-idGame:${idGame}-quantity:${quantity}`)
+
         const cart: Cart = await cartusecases.addToCart(idUser, idGame, quantity);
 
         res.json(cart);
@@ -73,4 +75,6 @@ router.delete("/", isAuth, async (req: Request, res: Response) => {
         console.error(err);
     }
 })
+
+export { router as routerCart }
 

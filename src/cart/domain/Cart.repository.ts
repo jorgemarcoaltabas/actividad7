@@ -1,7 +1,9 @@
+
+import Item from './Item';
 export default interface CartRepository {
-    getCart(idUser: Number): Promise<Map<Number, Number>>,
-    addToCart(idUser: Number, idGame: Number, quantity: Number): Promise<Map<Number, Number>>,
-    deleteFromCart(idUser: Number, idGame: Number): Promise<Map<Number, Number>>,
+    getCart(idUser: Number): Promise<Item[]>,
+    addToCart(idUser: Number, idGame: Number, quantity: Number): Promise<Item[]>,
+    deleteFromCart(idUser: Number, idGame: Number): Promise<Item[]>,
     deleteCart(idUser: Number): Promise<Boolean>
 
 }

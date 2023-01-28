@@ -4,5 +4,5 @@ import Item from "./Item";
 
 export default interface Order {
     items: Item[],
-    id: Number
+    id?: Number
 }

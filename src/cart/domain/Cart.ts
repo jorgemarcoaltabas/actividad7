@@ -1,7 +1,8 @@
 import User from "../../users/domain/User";
 import Videogame from "../../videogames/domain/Videogame";
+import ItemData from "./ItemData";
 
 export default interface Cart {
-    items: Map<Videogame, Number>,
-    user?: User,
+    items: ItemData[]
+    user?: Number,
 }

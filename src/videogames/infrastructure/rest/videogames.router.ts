@@ -49,8 +49,21 @@ router.put("/:id", isAuth, isAdmin, async (req: Request, res: Response) => {
             name: req.body.name,
             price: req.body.price,
         }
-        const modifiedVideogame: Videogame = await videogamesRepository.modifyGame(videogame, Number(req.params.id))
-        return modifiedVideogame;
+        console.log(videogame)
+        console.log(req.params.id);
+        const modifiedVideogame: Videogame = await videogamesUseCases.modifyGame(videogame, Number(req.params.id))
+        res.json(modifiedVideogame);
+    } catch (err) {
+        console.error(err);
+    }
+})
+
+router.delete("/:id", isAuth, isAdmin, async (req: Request, res: Response) => {
+    try {
+
+        console.log(req.params.id);
+        const videogames: Videogame[] = await videogamesUseCases.deleteGame(Number(req.params.id))
+        res.json(videogames);
     } catch (err) {
         console.error(err);
     }
