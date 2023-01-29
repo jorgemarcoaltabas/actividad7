@@ -1,11 +1,13 @@
 //imports
 import express from "express";
 import dotenv from "dotenv";
+import { Request, Response } from "express";
+import { NextFunction } from "express";
 
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+
 app.use(express.json());
 
 //routers
@@ -17,9 +19,9 @@ app.use("/users", routerUsers);
 app.use("/videogames", routerVideogames)
 app.use("/carts", routerCart)
 app.use("/orders", routerOrders)
+app.use("/", (req: Request, res: Response, next: NextFunction): void => {
+  res.json({ message: "Allo! Catch-all route." });
+});
 //portListener
 
-
-app.listen(process.env.PORT, () => {
-  console.log(`Application started on port ${port}`);
-});
+export { app }
