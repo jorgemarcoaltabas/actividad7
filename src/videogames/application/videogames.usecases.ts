@@ -21,12 +21,19 @@ export default class VideogamesUseCases {
     }
 
     async addGame(videogame: Videogame): Promise<Videogame> {
-
-        return this.videogamesRepository.addGame(videogame);
+        const videogameReturned: Videogame = await this.videogamesRepository.addGame(videogame);
+        return videogameReturned;
     }
 
-    async modifyGame(videogame: Videogame, id: Number) {
-        return this.videogamesRepository.modifyGame(videogame, id);
+
+    async modifyGame(videogame: Videogame, id: Number): Promise<Videogame> {
+        const videogameReturned: Videogame = await this.videogamesRepository.modifyGame(videogame, id);
+        return videogameReturned;
+    }
+
+    async deleteGame(id: Number): Promise<Videogame[]> {
+        const videogames: Videogame[] = await this.videogamesRepository.deleteGame(id);
+        return videogames;
     }
 
 
